@@ -7,6 +7,7 @@ from telegram.update import Update
 # from pymongo import MongoClient
 # from pprint import pprint
 import base64
+import pdb
 # import requests
 
 
@@ -36,13 +37,13 @@ def anyMessage(update, context):
     try:
       if(not update.message):
         return
-      s=update.message.text.split(':',1).strip()
+      s=update.message.text.split(':',1)[0].strip()
       # type=['Bug','Doubt','Request']
       for i in range(0, len(s)):
-        if ('Bug' or 'Request' or 'Doubt') in s[i]:
+        if (('Bug') or ('Request') or ('Doubt')) in s[i]:
           teleSend("Thanks for sharing your issue. The concerned person has been notified about the issue and will soon contact you.")
     except:
-      teleSend('Error while joining',driver.get_screenshot_as_base64())
+      teleSend('Error while raising the ticket',driver.get_screenshot_as_base64())
 
 
 # def createticket(user_id, content):
@@ -50,13 +51,13 @@ def anyMessage(update, context):
 #     if()
 
 def help(update, context):
-    s='''COMMANDS 
-/status 
-/smart 
-/leave 
-/help 
-/login 
-/join (*deprecated)'''
+    s="""COMMANDS 
+    /start
+    /help
+    /Bug
+    /Doubt
+    /Request
+    (*deprecated)"""
     teleSend(s)
 
 updater = Updater(BOT_TOKEN, use_context=True)
@@ -64,9 +65,10 @@ updater = Updater(BOT_TOKEN, use_context=True)
 dp = updater.dispatcher
 dp.add_handler(CommandHandler("Hi", start))
 dp.add_handler(CommandHandler("help", help))
-dp.add_handler(CommandHandler("commands", help))
-dp.add_handler(MessageHandler(Filters.all,start))
-dp.add_handler(MessageHandler(Filters.text,anyMessage)
+# dp.add_handler(CommandHandler("commands", help))
+dp.add_handler(MessageHandler(Filters.all, start))
+dp.add_handler(MessageHandler(Filters.command, help))
+dp.add_handler(MessageHandler(Filters.command, anyMessage))
 # dp.add_error_handler(error)
 
 
